@@ -3,62 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XY · Love Story</title>
+<title>XY · Love System</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{
 font-family:'Noto Serif SC',serif;
-background:#000;
+background:linear-gradient(135deg,#1a1a1a,#2b1d1d,#1a1a1a);
 color:#fff;
 overflow-x:hidden;
 }
 
-/* 背景墙 */
-.bg{
+/* 背景柔光 */
+body::before{
+content:"";
 position:fixed;
 width:100%;
 height:100%;
-background:url('bg1.jpg') center/cover no-repeat;
-opacity:0.45;
-z-index:-2;
-}
-
-.overlay{
-position:fixed;
-width:100%;
-height:100%;
-background:linear-gradient(to bottom,rgba(0,0,0,0.3),rgba(0,0,0,0.8));
+background:radial-gradient(circle at 20% 30%,rgba(255,200,180,0.15),transparent),
+radial-gradient(circle at 80% 70%,rgba(255,220,180,0.12),transparent);
 z-index:-1;
 }
 
+/* 容器 */
 .container{
-max-width:900px;
+max-width:1000px;
 margin:auto;
-padding:40px 20px;
+padding:50px 20px;
 }
 
 h1{
 font-family:'Playfair Display',serif;
-font-size:40px;
+font-size:42px;
 text-align:center;
-margin-bottom:20px;
+margin-bottom:10px;
 }
 
+.subtitle{
+text-align:center;
+opacity:0.8;
+margin-bottom:30px;
+}
+
+.quote{
+text-align:center;
+color:#ffd8a8;
+margin-bottom:40px;
+font-size:18px;
+}
+
+/* 卡片 */
 .card{
 background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
-padding:25px;
-margin:25px 0;
+backdrop-filter:blur(18px);
+padding:30px;
+margin:30px 0;
 border-radius:25px;
+box-shadow:0 15px 40px rgba(0,0,0,0.4);
 }
 
-/* 按钮 */
-button{
-padding:8px 15px;
-margin:6px;
+/* 菜单按钮 */
+.menu button{
+display:block;
+width:100%;
+margin:8px 0;
+padding:12px;
 border:none;
 border-radius:30px;
 background:linear-gradient(135deg,#f6c1a5,#e89cae);
@@ -66,153 +78,160 @@ color:white;
 cursor:pointer;
 }
 
+/* 兑换按钮 */
+.redeem button{
+background:linear-gradient(135deg,#ffd8a8,#e8b89c);
+color:#000;
+}
+
 /* 时间线 */
+.story{
+margin-top:60px;
+}
+
 .story-section{
-min-height:60vh;
+min-height:50vh;
 display:flex;
 flex-direction:column;
 justify-content:center;
-margin-bottom:60px;
 opacity:0;
 transform:translateY(40px);
 transition:1s;
+margin-bottom:60px;
 }
+
 .story-section.show{
 opacity:1;
 transform:translateY(0);
 }
 
-/* ===== 生日覆盖层 ===== */
-
-.birthday-layer{
-position:fixed;
-top:0;left:0;
-width:100%;
-height:100%;
-background:linear-gradient(135deg,#2b1d1d,#000);
-display:flex;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-z-index:9999;
-text-align:center;
-padding:30px;
-transition:1s;
-}
-
-.birthday-text{
-font-size:22px;
-max-width:650px;
-line-height:1.8;
-opacity:0;
-transition:1s;
-}
-
-.birthday-text.show{
-opacity:1;
-}
-
-.final-line{
-margin-top:40px;
-font-size:24px;
+.story-section h3{
 color:#ffd8a8;
-opacity:0;
-transition:2s;
-letter-spacing:1px;
-}
-
-.final-line.show{
-opacity:1;
-}
-
-.firework{
-position:fixed;
-width:6px;
-height:6px;
-background:#ffd8a8;
-border-radius:50%;
-pointer-events:none;
-animation:explode 1s ease-out forwards;
-}
-
-@keyframes explode{
-to{
-transform:translate(var(--x),var(--y));
-opacity:0;
-}
+margin-bottom:15px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="bg"></div>
-<div class="overlay"></div>
+<audio id="bgMusic" src="main.mp3" loop></audio>
 
-<!-- ===== 主系统 ===== -->
 <div class="container">
 
 <h1>XY · Love Story</h1>
+<div class="subtitle">Our Sweet Universe</div>
+
+<div class="quote" id="dailyQuote"></div>
 
 <div class="card">
+<h2>甜蜜值：<span id="score">0</span></h2>
+</div>
+
+<div class="card menu">
 <h2>甜蜜任务</h2>
-<button onclick="add(100)">家务 +100</button>
-<button onclick="add(300)">逛街 +300</button>
-<button onclick="add(500)">做饭 +500</button>
-<div style="margin-top:10px;">甜蜜值：<span id="score">0</span></div>
+<button onclick="add(100,'house')">家务 +100</button>
+<button onclick="add(300,'shop')">逛街 +300</button>
+<button onclick="add(100,'dog')">遛狗 +100</button>
+<button onclick="add(500,'cook')">做饭 +500</button>
+<button onclick="add(500,'love')">啪啪啪 +500</button>
+</div>
+
+<div class="card redeem">
+<h2>兑换区</h2>
+<button onclick="redeem(1000)">停止生气 -1000</button>
+<button onclick="redeem(2000)">回家住一天 -2000</button>
 </div>
 
 <div class="card">
-<h2>我们的故事</h2>
-<div id="story"></div>
+<h2>恋爱成就</h2>
+<div id="achievements"></div>
+</div>
+
+<div class="story">
+<div class="story-section">
+<h3>初遇</h3>
+<p>那一天，我们的故事开始</p>
+</div>
+
+<div class="story-section">
+<h3>第一次旅行</h3>
+<p>一起看风景的日子永远值得纪念</p>
+</div>
+
+<div class="story-section">
+<h3>未来</h3>
+<p>未来的每一天都想与你并肩</p>
+</div>
 </div>
 
 </div>
-
-<!-- ===== 生日覆盖层 ===== -->
-<div class="birthday-layer" id="birthdayLayer" style="display:none;">
-<div class="birthday-text" id="birthdayText"></div>
-<div class="final-line" id="finalLine">
-✨ 31 岁，欢迎来到更被爱的一年 ✨
-</div>
-</div>
-
-<!-- 音乐 -->
-<audio id="birthdayMusic" src="birthday.mp3" loop></audio>
-<audio id="mainMusic" src="main.mp3" loop></audio>
 
 <script>
 
-/* ===== 积分系统 ===== */
+/* 音乐激活 */
+document.addEventListener("click",()=>{
+document.getElementById("bgMusic").play();
+},{once:true});
+
+/* 积分 */
 let score=localStorage.getItem("loveScore")||0;
 document.getElementById("score").innerText=score;
 
-function add(n){
-score=parseInt(score)+n;
-localStorage.setItem("loveScore",score);
-document.getElementById("score").innerText=score;
+let stats=JSON.parse(localStorage.getItem("stats"))||{
+house:0,shop:0,dog:0,cook:0,love:0,redeem:0
+};
+
+function add(points,type){
+score=parseInt(score)+points;
+stats[type]++;
+update();
 }
 
-/* ===== 时间线 ===== */
-let storyData=[
-{title:"初遇",content:"那一天，我们的故事开始"},
-{title:"旅行",content:"一起看世界的日子"},
-{title:"未来",content:"未来每一天都想与你并肩"}
+function redeem(points){
+if(score>=points){
+score-=points;
+stats.redeem+=points;
+update();
+}else{
+alert("甜蜜值不足");
+}
+}
+
+function update(){
+localStorage.setItem("loveScore",score);
+localStorage.setItem("stats",JSON.stringify(stats));
+document.getElementById("score").innerText=score;
+checkAchievements();
+}
+
+/* 每日情话 */
+const quotes=[
+"今天也比昨天更爱你",
+"和你在一起的时间都值得纪念",
+"世界很大，但你是我的宇宙",
+"余生很长，但我只想和你走"
 ];
 
-function renderStory(){
-let c=document.getElementById("story");
-storyData.forEach(item=>{
-c.innerHTML+=`
-<div class="story-section">
-<h3>${item.title}</h3>
-<p>${item.content}</p>
-</div>`;
+const today=new Date().getDate()%quotes.length;
+document.getElementById("dailyQuote").innerText="💌 "+quotes[today];
+
+/* 成就 */
+function checkAchievements(){
+let list=[];
+if(stats.cook>=10) list.push("🍳 米其林之爱");
+if(score>=5000) list.push("💎 甜蜜大师");
+if(stats.redeem>=5000) list.push("🌿 情绪管理专家");
+
+let box=document.getElementById("achievements");
+box.innerHTML="";
+list.forEach(a=>{
+box.innerHTML+=`<div>${a}</div>`;
 });
-observe();
 }
 
-function observe(){
+checkAchievements();
+
+/* 滚动动画 */
 let sections=document.querySelectorAll(".story-section");
 let observer=new IntersectionObserver(entries=>{
 entries.forEach(entry=>{
@@ -222,84 +241,6 @@ entry.target.classList.add("show");
 });
 });
 sections.forEach(sec=>observer.observe(sec));
-}
-
-renderStory();
-
-/* ===== 生日逻辑 ===== */
-
-const birthdayDate="2026-03-03";
-const today=new Date().toISOString().split("T")[0];
-
-const messages=[
-"波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少",
-"站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年",
-"真实很庆幸这一路有你"
-];
-
-let currentIndex=0;
-
-if(today===birthdayDate){
-startBirthday();
-}
-
-function startBirthday(){
-const layer=document.getElementById("birthdayLayer");
-layer.style.display="flex";
-document.getElementById("birthdayMusic").play();
-
-showNextMessage();
-
-layer.addEventListener("click",function(e){
-createFirework(e.clientX,e.clientY);
-currentIndex++;
-if(currentIndex < messages.length){
-setTimeout(showNextMessage,600);
-}else if(currentIndex === messages.length){
-setTimeout(showFinalLine,800);
-}else{
-endBirthday();
-}
-});
-}
-
-function showNextMessage(){
-const text=document.getElementById("birthdayText");
-text.classList.remove("show");
-setTimeout(()=>{
-text.innerText=messages[currentIndex];
-text.classList.add("show");
-},300);
-}
-
-function showFinalLine(){
-document.getElementById("birthdayText").classList.remove("show");
-document.getElementById("finalLine").classList.add("show");
-}
-
-function endBirthday(){
-const layer=document.getElementById("birthdayLayer");
-layer.style.opacity="0";
-document.getElementById("birthdayMusic").pause();
-document.getElementById("mainMusic").play();
-setTimeout(()=>{layer.style.display="none";},1200);
-}
-
-/* 烟花 */
-function createFirework(x,y){
-for(let i=0;i<18;i++){
-let f=document.createElement("div");
-f.className="firework";
-f.style.left=x+"px";
-f.style.top=y+"px";
-let angle=Math.random()*2*Math.PI;
-let radius=60+Math.random()*40;
-f.style.setProperty("--x",Math.cos(angle)*radius+"px");
-f.style.setProperty("--y",Math.sin(angle)*radius+"px");
-document.body.appendChild(f);
-setTimeout(()=>f.remove(),1000);
-}
-}
 
 </script>
 
