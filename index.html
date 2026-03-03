@@ -16,7 +16,24 @@ color:#fff;
 overflow-x:hidden;
 }
 
-/* 原页面 */
+/* 背景墙 */
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+background:url('bg1.jpg') center/cover no-repeat;
+opacity:0.45;
+z-index:-2;
+}
+
+.overlay{
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(to bottom,rgba(0,0,0,0.3),rgba(0,0,0,0.8));
+z-index:-1;
+}
+
 .container{
 max-width:900px;
 margin:auto;
@@ -25,7 +42,7 @@ padding:40px 20px;
 
 h1{
 font-family:'Playfair Display',serif;
-font-size:38px;
+font-size:40px;
 text-align:center;
 margin-bottom:20px;
 }
@@ -34,10 +51,11 @@ margin-bottom:20px;
 background:rgba(255,255,255,0.08);
 backdrop-filter:blur(15px);
 padding:25px;
-margin:20px 0;
-border-radius:20px;
+margin:25px 0;
+border-radius:25px;
 }
 
+/* 按钮 */
 button{
 padding:8px 15px;
 margin:6px;
@@ -46,6 +64,22 @@ border-radius:30px;
 background:linear-gradient(135deg,#f6c1a5,#e89cae);
 color:white;
 cursor:pointer;
+}
+
+/* 时间线 */
+.story-section{
+min-height:60vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+margin-bottom:60px;
+opacity:0;
+transform:translateY(40px);
+transition:1s;
+}
+.story-section.show{
+opacity:1;
+transform:translateY(0);
 }
 
 /* ===== 生日覆盖层 ===== */
@@ -112,8 +146,12 @@ opacity:0;
 
 <body>
 
-<!-- 原网页 -->
+<div class="bg"></div>
+<div class="overlay"></div>
+
+<!-- ===== 主系统 ===== -->
 <div class="container">
+
 <h1>XY · Love Story</h1>
 
 <div class="card">
@@ -123,19 +161,29 @@ opacity:0;
 <button onclick="add(500)">做饭 +500</button>
 <div style="margin-top:10px;">甜蜜值：<span id="score">0</span></div>
 </div>
+
+<div class="card">
+<h2>我们的故事</h2>
+<div id="story"></div>
 </div>
 
-<!-- 生日覆盖层 -->
+</div>
+
+<!-- ===== 生日覆盖层 ===== -->
 <div class="birthday-layer" id="birthdayLayer" style="display:none;">
 <div class="birthday-text" id="birthdayText"></div>
 <div class="final-line" id="finalLine">
-✨ 31 岁，欢迎来到更被爱的一年。 ✨
+✨ 31 岁，欢迎来到更被爱的一年 ✨
 </div>
 </div>
+
+<!-- 音乐 -->
+<audio id="birthdayMusic" src="birthday.mp3" loop></audio>
+<audio id="mainMusic" src="main.mp3" loop></audio>
 
 <script>
 
-/* ===== 原积分系统 ===== */
+/* ===== 积分系统 ===== */
 let score=localStorage.getItem("loveScore")||0;
 document.getElementById("score").innerText=score;
 
@@ -145,37 +193,72 @@ localStorage.setItem("loveScore",score);
 document.getElementById("score").innerText=score;
 }
 
-/* ===== 生日模式逻辑 ===== */
+/* ===== 时间线 ===== */
+let storyData=[
+{title:"初遇",content:"那一天，我们的故事开始"},
+{title:"旅行",content:"一起看世界的日子"},
+{title:"未来",content:"未来每一天都想与你并肩"}
+];
+
+function renderStory(){
+let c=document.getElementById("story");
+storyData.forEach(item=>{
+c.innerHTML+=`
+<div class="story-section">
+<h3>${item.title}</h3>
+<p>${item.content}</p>
+</div>`;
+});
+observe();
+}
+
+function observe(){
+let sections=document.querySelectorAll(".story-section");
+let observer=new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.classList.add("show");
+}
+});
+});
+sections.forEach(sec=>observer.observe(sec));
+}
+
+renderStory();
+
+/* ===== 生日逻辑 ===== */
 
 const birthdayDate="2026-03-03";
 const today=new Date().toISOString().split("T")[0];
 
 const messages=[
-"波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少。",
-"站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年。",
-"真实很庆幸这一路有你。"
+"波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少",
+"站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年",
+"真实很庆幸这一路有你"
 ];
 
 let currentIndex=0;
 
 if(today===birthdayDate){
-startBirthdayMode();
+startBirthday();
 }
 
-function startBirthdayMode(){
+function startBirthday(){
 const layer=document.getElementById("birthdayLayer");
 layer.style.display="flex";
+document.getElementById("birthdayMusic").play();
+
 showNextMessage();
 
 layer.addEventListener("click",function(e){
-if(currentIndex < messages.length){
 createFirework(e.clientX,e.clientY);
 currentIndex++;
 if(currentIndex < messages.length){
 setTimeout(showNextMessage,600);
-}else{
+}else if(currentIndex === messages.length){
 setTimeout(showFinalLine,800);
-}
+}else{
+endBirthday();
 }
 });
 }
@@ -191,17 +274,15 @@ text.classList.add("show");
 
 function showFinalLine(){
 document.getElementById("birthdayText").classList.remove("show");
-const final=document.getElementById("finalLine");
-final.classList.add("show");
-setTimeout(endBirthdayMode,2500);
+document.getElementById("finalLine").classList.add("show");
 }
 
-function endBirthdayMode(){
+function endBirthday(){
 const layer=document.getElementById("birthdayLayer");
 layer.style.opacity="0";
-setTimeout(()=>{
-layer.style.display="none";
-},1200);
+document.getElementById("birthdayMusic").pause();
+document.getElementById("mainMusic").play();
+setTimeout(()=>{layer.style.display="none";},1200);
 }
 
 /* 烟花 */
