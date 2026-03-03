@@ -3,258 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XY · Forever Love 💍</title>
+<title>Happy Birthday My Love 🎂</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-
 body{
 font-family:'Noto Serif SC',serif;
-color:#fdfcf8;
-min-height:100vh;
-overflow-x:hidden;
 background:#000;
+color:#fff;
+overflow:hidden;
 }
 
 /* 背景 */
-.bg{
-position:fixed;
-width:100%;
-height:100%;
-background-size:cover;
-background-position:center;
-transition:opacity 1.5s ease-in-out;
-z-index:-2;
-opacity:0;
-}
-
-.overlay{
-position:fixed;
-width:100%;
-height:100%;
-background:linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
-z-index:-1;
-}
-
-.container{
-padding:40px 20px;
-max-width:900px;
-margin:auto;
+body.birthday{
+background:linear-gradient(135deg,#2b1d1d,#000);
 }
 
 /* 标题 */
-h1{
+.header{
+text-align:center;
+margin-top:60px;
+}
+
+.header h1{
 font-family:'Playfair Display',serif;
 font-size:42px;
-text-align:center;
+color:#ffd8a8;
 letter-spacing:2px;
-margin-bottom:10px;
 }
 
-.subtitle{
-text-align:center;
-margin-bottom:30px;
-opacity:0.9;
+.age{
+margin-top:10px;
+font-size:18px;
+opacity:0.8;
 }
 
-/* 天数 */
-.days{
-text-align:center;
-margin-bottom:30px;
-font-size:20px;
+/* 祝福弹窗 */
+.modal{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.6);
+display:flex;
+align-items:center;
+justify-content:center;
+opacity:0;
+pointer-events:none;
+transition:0.8s;
+}
+
+.modal.show{
+opacity:1;
+pointer-events:auto;
+}
+
+.modal-content{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+padding:40px;
+border-radius:25px;
+max-width:600px;
+line-height:1.8;
+box-shadow:0 20px 50px rgba(0,0,0,0.6);
+}
+
+.close{
+margin-top:20px;
+text-align:right;
+cursor:pointer;
 color:#ffd8a8;
 }
 
-/* 卡片 */
-.card{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
-padding:30px;
-margin:25px 0;
-border-radius:25px;
-box-shadow:0 15px 40px rgba(0,0,0,0.4);
+/* 玫瑰 */
+.rose{
+position:fixed;
+top:-50px;
+font-size:20px;
+animation:fall linear infinite;
+opacity:0.8;
 }
 
-.card h2{
-text-align:center;
-margin-bottom:20px;
-font-weight:600;
-letter-spacing:1px;
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(360deg);
+}
 }
 
-/* 按钮 */
-button{
-padding:10px 18px;
-margin:6px;
-border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#f6c1a5,#e89cae);
-color:white;
-font-size:15px;
-cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-transform:translateY(-3px);
-box-shadow:0 8px 20px rgba(0,0,0,0.3);
-}
-
-/* 时间线 */
-.timeline{
-position:relative;
-margin-top:20px;
-padding-left:30px;
-}
-
-.timeline::before{
-content:'';
-position:absolute;
-left:10px;
-top:0;
-width:2px;
-height:100%;
-background:#ffd8a8;
-}
-
-.timeline-item{
-position:relative;
-margin-bottom:20px;
-}
-
-.timeline-item::before{
-content:'';
-position:absolute;
-left:-22px;
-top:5px;
-width:12px;
-height:12px;
+/* 烟花 */
+.firework{
+position:fixed;
+width:6px;
+height:6px;
 background:#ffd8a8;
 border-radius:50%;
+pointer-events:none;
+animation:explode 1s ease-out forwards;
 }
 
-input{
-padding:8px;
-border-radius:10px;
-border:none;
-margin:5px 5px 5px 0;
+@keyframes explode{
+to{
+transform:translate(var(--x),var(--y));
+opacity:0;
 }
-
-.score{
-text-align:center;
-font-size:22px;
-margin-bottom:20px;
-color:#ffd8a8;
 }
 </style>
 </head>
 
 <body>
 
-<div class="bg" id="bg1"></div>
-<div class="overlay"></div>
-
-<div class="container">
-
-<h1>XY · Forever Love</h1>
-<div class="subtitle">To My One and Only 💍</div>
-
-<div class="days" id="days"></div>
-
-<div class="score">甜蜜值：<span id="score">0</span></div>
-
-<div class="card">
-<h2>甜蜜任务</h2>
-<button onclick="add(100)">家务 +100</button>
-<button onclick="add(300)">逛街 +300</button>
-<button onclick="add(100)">遛狗 +100</button>
-<button onclick="add(500)">做饭 +500</button>
-<button onclick="add(500)">甜蜜时光 +500</button>
+<div class="header">
+<h1>Happy Birthday My Love 🎂</h1>
+<div class="age">31 岁 · 2026.03.03</div>
 </div>
 
-<div class="card">
-<h2>兑换区</h2>
-<button onclick="minus(1000)">停止生气 -1000</button>
-<button onclick="minus(2000)">回家住一天 -2000</button>
+<div class="modal" id="modal">
+<div class="modal-content">
+<p>波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少。</p>
+<br>
+<p>站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年。</p>
+<br>
+<p>真实很庆幸这一路有你。</p>
+
+<div class="close" onclick="closeModal()">关闭</div>
 </div>
-
-<div class="card">
-<h2>爱情时间线</h2>
-
-<input type="text" id="date" placeholder="日期">
-<input type="text" id="event" placeholder="事件">
-<button onclick="addTimeline()">添加</button>
-
-<div class="timeline" id="timeline"></div>
 </div>
-
-</div>
-
-<audio autoplay loop>
-<source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mp3">
-</audio>
 
 <script>
-/* 背景轮播淡入淡出 */
-const images=["bg1.jpg","bg2.jpg","bg3.jpg","bg4.jpg"];
-let i=0;
-const bg=document.getElementById("bg1");
 
-function changeBg(){
-bg.style.opacity=0;
-setTimeout(()=>{
-bg.style.backgroundImage=`url(${images[i]})`;
-bg.style.opacity=1;
-i=(i+1)%images.length;
-},1000);
-}
-changeBg();
-setInterval(changeBg,7000);
-
-/* 甜蜜值 */
-let score=localStorage.getItem("loveScore")||0;
-document.getElementById("score").innerText=score;
-
-function add(n){score=parseInt(score)+n;update();}
-function minus(n){score=parseInt(score)-n;if(score<0)score=0;update();}
-function update(){
-document.getElementById("score").innerText=score;
-localStorage.setItem("loveScore",score);
-}
-
-/* 在一起天数（修改为你们在一起日期） */
-const startDate=new Date("2023-05-20");
+/* 判断生日 */
 const today=new Date();
-const diff=Math.floor((today-startDate)/(1000*60*60*24));
-document.getElementById("days").innerText=
-"我们已经在一起 "+diff+" 天 💖";
+if(today.getFullYear()==2026 && today.getMonth()==2 && today.getDate()==3){
+document.body.classList.add("birthday");
+setTimeout(()=>{document.getElementById("modal").classList.add("show");},1500);
+createRoses();
+}
 
-/* 时间线 */
-let timelineData=JSON.parse(localStorage.getItem("timeline"))||[];
+/* 关闭弹窗 */
+function closeModal(){
+document.getElementById("modal").classList.remove("show");
+}
 
-function renderTimeline(){
-let c=document.getElementById("timeline");
-c.innerHTML="";
-timelineData.forEach(item=>{
-c.innerHTML+=`<div class="timeline-item"><b>${item.date}</b><br>${item.event}</div>`;
+/* 玫瑰飘落 */
+function createRoses(){
+for(let i=0;i<20;i++){
+let rose=document.createElement("div");
+rose.className="rose";
+rose.innerText="🌹";
+rose.style.left=Math.random()*100+"vw";
+rose.style.animationDuration=(5+Math.random()*5)+"s";
+document.body.appendChild(rose);
+}
+}
+
+/* 点击烟花 */
+document.addEventListener("click",function(e){
+for(let i=0;i<18;i++){
+let f=document.createElement("div");
+f.className="firework";
+f.style.left=e.clientX+"px";
+f.style.top=e.clientY+"px";
+let angle=Math.random()*2*Math.PI;
+let radius=60+Math.random()*40;
+f.style.setProperty("--x",Math.cos(angle)*radius+"px");
+f.style.setProperty("--y",Math.sin(angle)*radius+"px");
+document.body.appendChild(f);
+setTimeout(()=>f.remove(),1000);
+}
 });
-}
 
-function addTimeline(){
-let date=document.getElementById("date").value;
-let event=document.getElementById("event").value;
-if(date&&event){
-timelineData.push({date,event});
-localStorage.setItem("timeline",JSON.stringify(timelineData));
-renderTimeline();
-document.getElementById("date").value="";
-document.getElementById("event").value="";
-}
-}
-
-renderTimeline();
 </script>
 
 </body>
