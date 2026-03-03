@@ -3,197 +3,142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💗 我们的小宇宙</title>
+<title>XY 恋爱宇宙 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
 
 <style>
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC";
-    background: linear-gradient(135deg, #ffd6e7, #ffeef5);
-    text-align: center;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'ZCOOL XiaoWei',serif;}
+body{
+height:100vh;
+overflow:hidden;
+color:white;
 }
 
-.hidden {
-    display: none;
+.background{
+position:fixed;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+filter:blur(8px) brightness(0.6);
+transition:1s;
+z-index:-1;
 }
 
-.container {
-    padding: 20px;
-    max-width: 500px;
-    margin: auto;
+.container{
+text-align:center;
+padding:30px;
 }
 
-.card {
-    background: white;
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(255, 105, 135, 0.2);
+h1{
+font-size:40px;
+margin-bottom:20px;
 }
 
-h1 {
-    color: #ff4f81;
+.score{
+font-size:28px;
+margin-bottom:30px;
 }
 
-h3 {
-    color: #ff4f81;
+.card{
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(15px);
+padding:25px;
+margin:20px auto;
+border-radius:20px;
+width:90%;
+max-width:500px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
-.button {
-    background: #ff7aa2;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 30px;
-    font-size: 15px;
-    cursor: pointer;
-    margin-top: 10px;
+button{
+margin:8px;
+padding:10px 18px;
+border:none;
+border-radius:20px;
+background:#ff6fa5;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
 }
 
-.button:hover {
-    background: #ff4f81;
+button:hover{
+background:#ff3f8e;
+transform:scale(1.05);
 }
 
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    margin-top: 10px;
-    box-sizing: border-box;
+.menu{
+margin-bottom:20px;
 }
 
-.footer {
-    margin: 40px 0;
-    font-size: 13px;
-    color: #999;
+audio{
+display:none;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔐 登录页 -->
-<div id="loginPage" class="container">
-    <h1>💖 专属入口 💖</h1>
-    <div class="card">
-        <p>请输入你们的专属密码</p>
-        <input type="password" id="passwordInput" placeholder="输入密码">
-        <button class="button" onclick="checkPassword()">进入我们的小宇宙</button>
-    </div>
-</div>
-
-<!-- 💗 主页面 -->
-<div id="mainPage" class="hidden">
+<div class="background" id="bg"></div>
 
 <div class="container">
 
-<h1>💗 我们的小宇宙 💗</h1>
+<h1>XY 恋爱宇宙 💕</h1>
+<div class="score">当前甜蜜值：<span id="score">0</span></div>
 
 <div class="card">
-    💖 心动值：<span id="currency">0</span><br>
-    🏆 当前等级：<span id="level">青铜男友</span>
-</div>
-
-<div class="card">
-    <h3>🌸 甜蜜任务</h3>
-    <button class="button" onclick="completeTask()">完成一次贴贴 +100</button>
-</div>
-
-<div class="card">
-    <h3>🎁 兑换区</h3>
-    <button class="button" onclick="buyItem('电影约会',500)">电影约会 -500</button>
-    <button class="button" onclick="buyItem('旅行计划',2000)">旅行计划 -2000</button>
+<h2>甜蜜任务 🌸</h2>
+<button onclick="add(100)">🧹 家务 +100</button>
+<button onclick="add(300)">🛍 逛街 +300</button>
+<button onclick="add(100)">🐶 遛狗 +100</button>
+<button onclick="add(500)">🍳 做饭 +500</button>
+<button onclick="add(500)">💞 啪啪啪 +500</button>
 </div>
 
 <div class="card">
-    <h3>💌 恋爱日记</h3>
-    <textarea id="diaryInput" rows="3" placeholder="写下今天的甜甜瞬间..."></textarea>
-    <button class="button" onclick="addDiary()">保存日记</button>
-    <div id="diaryList"></div>
+<h2>兑换区 💎</h2>
+<button onclick="minus(1000)">😤 停止生气 -1000</button>
+<button onclick="minus(2000)">🏠 回家住一天 -2000</button>
 </div>
 
 </div>
 
-<div class="footer">made with ❤️ only for you</div>
-</div>
+<audio autoplay loop>
+<source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mp3">
+</audio>
 
 <script>
+let score = localStorage.getItem("loveScore") || 0;
+document.getElementById("score").innerText = score;
 
-// 🔐 你可以改成你们的专属密码
-const correctPassword = "5201314";
-
-let currency = localStorage.getItem("currency") ? parseInt(localStorage.getItem("currency")) : 0;
-let diaries = localStorage.getItem("diaries") ? JSON.parse(localStorage.getItem("diaries")) : [];
-
-// 登录检查
-function checkPassword() {
-    const input = document.getElementById("passwordInput").value;
-    if (input === correctPassword) {
-        document.getElementById("loginPage").classList.add("hidden");
-        document.getElementById("mainPage").classList.remove("hidden");
-        updateUI();
-    } else {
-        alert("密码不对哦 💔");
-    }
+function add(num){
+score = parseInt(score) + num;
+update();
 }
 
-// 更新界面
-function updateUI() {
-    document.getElementById("currency").innerText = currency;
-    document.getElementById("level").innerText = getLevel();
-    renderDiaries();
-    localStorage.setItem("currency", currency);
+function minus(num){
+score = parseInt(score) - num;
+if(score < 0) score = 0;
+update();
 }
 
-// 等级系统
-function getLevel() {
-    if (currency >= 5000) return "👑 王者男友";
-    if (currency >= 3000) return "💎 星耀男友";
-    if (currency >= 1500) return "🥇 黄金男友";
-    if (currency >= 500) return "🥈 白银男友";
-    return "🥉 青铜男友";
+function update(){
+document.getElementById("score").innerText = score;
+localStorage.setItem("loveScore",score);
 }
 
-// 完成任务
-function completeTask() {
-    currency += 100;
-    updateUI();
+const images = ["bg1.jpg","bg2.jpg","bg3.jpg","bg4.jpg"];
+let index = 0;
+
+function changeBg(){
+document.getElementById("bg").style.backgroundImage = `url(${images[index]})`;
+index = (index + 1) % images.length;
 }
 
-// 购买
-function buyItem(name, price) {
-    if (currency >= price) {
-        currency -= price;
-        alert("成功兑换：" + name + " 💕");
-        updateUI();
-    } else {
-        alert("心动值不够哦 💗");
-    }
-}
-
-// 添加日记
-function addDiary() {
-    const text = document.getElementById("diaryInput").value;
-    if (!text) return;
-
-    diaries.unshift(text);
-    localStorage.setItem("diaries", JSON.stringify(diaries));
-    document.getElementById("diaryInput").value = "";
-    renderDiaries();
-}
-
-// 渲染日记
-function renderDiaries() {
-    const list = document.getElementById("diaryList");
-    list.innerHTML = "";
-    diaries.forEach(d => {
-        const p = document.createElement("p");
-        p.innerText = "💗 " + d;
-        list.appendChild(p);
-    });
-}
-
+changeBg();
+setInterval(changeBg,5000);
 </script>
 
 </body>
