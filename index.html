@@ -3,244 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XY · Love System</title>
+<title>XY · Forever Love</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-
 body{
 font-family:'Noto Serif SC',serif;
-background:linear-gradient(135deg,#1a1a1a,#2b1d1d,#1a1a1a);
 color:#fff;
 overflow-x:hidden;
 }
 
-/* 背景柔光 */
-body::before{
-content:"";
+/* 生日模式 */
+#birthday{
 position:fixed;
 width:100%;
 height:100%;
-background:radial-gradient(circle at 20% 30%,rgba(255,200,180,0.15),transparent),
-radial-gradient(circle at 80% 70%,rgba(255,220,180,0.12),transparent);
-z-index:-1;
+background:linear-gradient(135deg,#1c1c1c,#2b1d1d);
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+z-index:999;
+transition:1s;
 }
 
-/* 容器 */
-.container{
-max-width:1000px;
-margin:auto;
-padding:50px 20px;
-}
-
-h1{
-font-family:'Playfair Display',serif;
-font-size:42px;
+#birthdayText{
+font-size:26px;
+max-width:700px;
 text-align:center;
-margin-bottom:10px;
+line-height:1.8;
+opacity:0;
+transition:1s;
 }
 
-.subtitle{
-text-align:center;
-opacity:0.8;
-margin-bottom:30px;
+.hidden{opacity:0;pointer-events:none;}
+
+/* 主页面 */
+#mainPage{
+background:url("bg.jpg") center/cover no-repeat fixed;
+min-height:100vh;
+padding:60px 20px;
+display:none;
 }
 
-.quote{
-text-align:center;
-color:#ffd8a8;
-margin-bottom:40px;
-font-size:18px;
+.overlay{
+background:rgba(0,0,0,0.45);
+min-height:100vh;
+padding-bottom:100px;
 }
 
-/* 卡片 */
-.card{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(18px);
+h1{text-align:center;font-size:42px;margin-bottom:10px;}
+.subtitle{text-align:center;margin-bottom:20px;}
+
+.glass{
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(15px);
 padding:30px;
-margin:30px 0;
+margin:30px auto;
 border-radius:25px;
-box-shadow:0 15px 40px rgba(0,0,0,0.4);
+max-width:900px;
 }
 
-/* 菜单按钮 */
-.menu button{
-display:block;
-width:100%;
-margin:8px 0;
-padding:12px;
+button{
+background:#f4b6b6;
 border:none;
+padding:10px 20px;
 border-radius:30px;
-background:linear-gradient(135deg,#f6c1a5,#e89cae);
-color:white;
+margin:8px;
 cursor:pointer;
 }
 
-/* 兑换按钮 */
-.redeem button{
-background:linear-gradient(135deg,#ffd8a8,#e8b89c);
-color:#000;
+.score{
+font-size:24px;
+margin-bottom:20px;
 }
 
-/* 时间线 */
-.story{
-margin-top:60px;
+/* 烟花 */
+.firework{
+position:fixed;
+width:6px;
+height:6px;
+background:#fff;
+border-radius:50%;
+animation:boom 0.8s ease-out forwards;
 }
 
-.story-section{
-min-height:50vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-opacity:0;
-transform:translateY(40px);
-transition:1s;
-margin-bottom:60px;
-}
-
-.story-section.show{
-opacity:1;
-transform:translateY(0);
-}
-
-.story-section h3{
-color:#ffd8a8;
-margin-bottom:15px;
+@keyframes boom{
+0%{transform:scale(1);opacity:1;}
+100%{transform:scale(25);opacity:0;}
 }
 </style>
 </head>
 
 <body>
 
-<audio id="bgMusic" src="main.mp3" loop></audio>
-
-<div class="container">
-
-<h1>XY · Love Story</h1>
-<div class="subtitle">Our Sweet Universe</div>
-
-<div class="quote" id="dailyQuote"></div>
-
-<div class="card">
-<h2>甜蜜值：<span id="score">0</span></h2>
+<!-- 生日模式 -->
+<div id="birthday">
+<div id="birthdayText"></div>
 </div>
 
-<div class="card menu">
-<h2>甜蜜任务</h2>
-<button onclick="add(100,'house')">家务 +100</button>
-<button onclick="add(300,'shop')">逛街 +300</button>
-<button onclick="add(100,'dog')">遛狗 +100</button>
-<button onclick="add(500,'cook')">做饭 +500</button>
-<button onclick="add(500,'love')">啪啪啪 +500</button>
+<!-- 主页面 -->
+<div id="mainPage">
+<div class="overlay">
+
+<h1>XY · Forever Love</h1>
+<div class="subtitle">To My One and Only 💍</div>
+
+<div class="glass">
+<div class="score">甜蜜值：<span id="score">0</span></div>
+
+<h3>甜蜜任务</h3>
+<button onclick="add(100)">家务 +100</button>
+<button onclick="add(300)">逛街 +300</button>
+<button onclick="add(100)">遛狗 +100</button>
+<button onclick="add(500)">做饭 +500</button>
+<button onclick="add(500)">甜蜜时光 +500</button>
 </div>
 
-<div class="card redeem">
-<h2>兑换区</h2>
+<div class="glass">
+<h3>兑换区</h3>
 <button onclick="redeem(1000)">停止生气 -1000</button>
 <button onclick="redeem(2000)">回家住一天 -2000</button>
 </div>
 
-<div class="card">
-<h2>恋爱成就</h2>
-<div id="achievements"></div>
 </div>
-
-<div class="story">
-<div class="story-section">
-<h3>初遇</h3>
-<p>那一天，我们的故事开始</p>
-</div>
-
-<div class="story-section">
-<h3>第一次旅行</h3>
-<p>一起看风景的日子永远值得纪念</p>
-</div>
-
-<div class="story-section">
-<h3>未来</h3>
-<p>未来的每一天都想与你并肩</p>
-</div>
-</div>
-
 </div>
 
 <script>
 
-/* 音乐激活 */
-document.addEventListener("click",()=>{
-document.getElementById("bgMusic").play();
-},{once:true});
+/* ====== 生日模式逻辑 ====== */
 
-/* 积分 */
+const texts=[
+"波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少。",
+"站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年。",
+"真实很庆幸这一路有你。"
+];
+
+let index=0;
+const textBox=document.getElementById("birthdayText");
+
+function showText(){
+textBox.style.opacity=0;
+setTimeout(()=>{
+textBox.innerText=texts[index];
+textBox.style.opacity=1;
+},500);
+}
+
+showText();
+
+document.getElementById("birthday").addEventListener("click",(e)=>{
+createFirework(e.clientX,e.clientY);
+
+if(index<texts.length-1){
+index++;
+setTimeout(showText,600);
+}else{
+endBirthday();
+}
+});
+
+function createFirework(x,y){
+let fw=document.createElement("div");
+fw.className="firework";
+fw.style.left=x+"px";
+fw.style.top=y+"px";
+document.body.appendChild(fw);
+setTimeout(()=>fw.remove(),800);
+}
+
+function endBirthday(){
+document.getElementById("birthday").style.opacity=0;
+setTimeout(()=>{
+document.getElementById("birthday").style.display="none";
+document.getElementById("mainPage").style.display="block";
+},1000);
+}
+
+/* ====== 积分系统 ====== */
+
 let score=localStorage.getItem("loveScore")||0;
 document.getElementById("score").innerText=score;
 
-let stats=JSON.parse(localStorage.getItem("stats"))||{
-house:0,shop:0,dog:0,cook:0,love:0,redeem:0
-};
-
-function add(points,type){
-score=parseInt(score)+points;
-stats[type]++;
-update();
-}
-
-function redeem(points){
-if(score>=points){
-score-=points;
-stats.redeem+=points;
-update();
-}else{
-alert("甜蜜值不足");
-}
-}
-
-function update(){
+function add(num){
+score=parseInt(score)+num;
 localStorage.setItem("loveScore",score);
-localStorage.setItem("stats",JSON.stringify(stats));
 document.getElementById("score").innerText=score;
-checkAchievements();
 }
 
-/* 每日情话 */
-const quotes=[
-"今天也比昨天更爱你",
-"和你在一起的时间都值得纪念",
-"世界很大，但你是我的宇宙",
-"余生很长，但我只想和你走"
-];
-
-const today=new Date().getDate()%quotes.length;
-document.getElementById("dailyQuote").innerText="💌 "+quotes[today];
-
-/* 成就 */
-function checkAchievements(){
-let list=[];
-if(stats.cook>=10) list.push("🍳 米其林之爱");
-if(score>=5000) list.push("💎 甜蜜大师");
-if(stats.redeem>=5000) list.push("🌿 情绪管理专家");
-
-let box=document.getElementById("achievements");
-box.innerHTML="";
-list.forEach(a=>{
-box.innerHTML+=`<div>${a}</div>`;
-});
+function redeem(num){
+if(score>=num){
+score-=num;
+localStorage.setItem("loveScore",score);
+document.getElementById("score").innerText=score;
+}else{
+alert("甜蜜值不足哦～");
 }
-
-checkAchievements();
-
-/* 滚动动画 */
-let sections=document.querySelectorAll(".story-section");
-let observer=new IntersectionObserver(entries=>{
-entries.forEach(entry=>{
-if(entry.isIntersecting){
-entry.target.classList.add("show");
 }
-});
-});
-sections.forEach(sec=>observer.observe(sec));
 
 </script>
 
