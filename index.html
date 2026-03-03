@@ -70,13 +70,39 @@ font-size:22px;
 margin-bottom:20px;
 }
 
+/* ===== 登录层 ===== */
+#login{
+position:fixed;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:20;
+}
+
+#login input{
+padding:12px 20px;
+border-radius:30px;
+border:none;
+outline:none;
+text-align:center;
+font-size:18px;
+width:200px;
+}
+
+#login button{
+margin-left:10px;
+}
+
 /* ===== 生日黑色开场 ===== */
 #birthday{
 position:fixed;
 width:100%;
 height:100%;
 background:#000;
-display:flex;
+display:none;
 align-items:center;
 justify-content:center;
 z-index:10;
@@ -112,6 +138,14 @@ animation:boom 0.8s ease-out forwards;
 
 <div class="bg" id="bg"></div>
 <div class="overlay"></div>
+
+<!-- 登录 -->
+<div id="login">
+<div>
+<input type="password" id="pwd" placeholder="请输入密码">
+<button onclick="checkPwd()">进入</button>
+</div>
+</div>
 
 <!-- 生日层 -->
 <div id="birthday">
@@ -154,6 +188,18 @@ bgIndex=(bgIndex+1)%images.length;
 changeBg();
 setInterval(changeBg,6000);
 
+/* ===== 登录逻辑 ===== */
+function checkPwd(){
+let value=document.getElementById("pwd").value;
+if(value==="5201314"){
+document.getElementById("login").style.display="none";
+document.getElementById("birthday").style.display="flex";
+showText();
+}else{
+alert("密码错误");
+}
+}
+
 /* ===== 生日逻辑 ===== */
 const texts=[
 "波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少",
@@ -172,7 +218,6 @@ textBox.innerText=texts[index];
 textBox.style.opacity=1;
 },400);
 }
-showText();
 
 document.getElementById("birthday").addEventListener("click",(e)=>{
 createFirework(e.clientX,e.clientY);
