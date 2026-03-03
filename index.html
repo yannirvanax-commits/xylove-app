@@ -57,7 +57,7 @@ padding:20px;
 }
 
 button{
-background:rgba(255,255,255,0.8);
+background:rgba(255,255,255,0.85);
 border:none;
 padding:10px 20px;
 border-radius:30px;
@@ -70,11 +70,12 @@ font-size:22px;
 margin-bottom:20px;
 }
 
-/* 生日层 */
+/* ===== 生日黑色开场 ===== */
 #birthday{
 position:fixed;
 width:100%;
 height:100%;
+background:#000;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -83,10 +84,11 @@ transition:1s;
 }
 
 #birthdayText{
-font-size:24px;
+font-size:26px;
 opacity:0;
 transition:1s;
 white-space:nowrap;
+color:#fff;
 }
 
 /* 烟花 */
@@ -111,11 +113,9 @@ animation:boom 0.8s ease-out forwards;
 <div class="bg" id="bg"></div>
 <div class="overlay"></div>
 
-<!-- 生日 -->
+<!-- 生日层 -->
 <div id="birthday">
-<div class="glass">
 <div id="birthdayText"></div>
-</div>
 </div>
 
 <!-- 主系统 -->
@@ -142,7 +142,7 @@ animation:boom 0.8s ease-out forwards;
 
 <script>
 
-/* 背景轮播 */
+/* ===== 背景轮播 ===== */
 const images=["bg1.jpg","bg2.jpg","bg3.jpg","bg4.jpg"];
 let bgIndex=0;
 const bg=document.getElementById("bg");
@@ -154,11 +154,12 @@ bgIndex=(bgIndex+1)%images.length;
 changeBg();
 setInterval(changeBg,6000);
 
-/* 生日逻辑 */
+/* ===== 生日逻辑 ===== */
 const texts=[
 "波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少",
 "站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年",
-"真实很庆幸这一路有你"
+"真实很庆幸这一路有你",
+"✨ 31 岁，欢迎来到更被爱的一年 ✨"
 ];
 
 let index=0;
@@ -202,7 +203,7 @@ document.body.style.overflow="auto";
 },1000);
 }
 
-/* 积分系统 */
+/* ===== 积分系统 ===== */
 let score=localStorage.getItem("loveScore")||0;
 document.getElementById("score").innerText=score;
 
