@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday My Love 🎂</title>
+<title>XY · Love Story</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
 
@@ -13,85 +13,84 @@ body{
 font-family:'Noto Serif SC',serif;
 background:#000;
 color:#fff;
-overflow:hidden;
+overflow-x:hidden;
 }
 
-/* 背景 */
-body.birthday{
-background:linear-gradient(135deg,#2b1d1d,#000);
+/* 原页面 */
+.container{
+max-width:900px;
+margin:auto;
+padding:40px 20px;
 }
 
-/* 标题 */
-.header{
-text-align:center;
-margin-top:60px;
-}
-
-.header h1{
+h1{
 font-family:'Playfair Display',serif;
-font-size:42px;
-color:#ffd8a8;
-letter-spacing:2px;
+font-size:38px;
+text-align:center;
+margin-bottom:20px;
 }
 
-.age{
-margin-top:10px;
-font-size:18px;
-opacity:0.8;
+.card{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+padding:25px;
+margin:20px 0;
+border-radius:20px;
 }
 
-/* 祝福弹窗 */
-.modal{
+button{
+padding:8px 15px;
+margin:6px;
+border:none;
+border-radius:30px;
+background:linear-gradient(135deg,#f6c1a5,#e89cae);
+color:white;
+cursor:pointer;
+}
+
+/* ===== 生日覆盖层 ===== */
+
+.birthday-layer{
 position:fixed;
 top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.6);
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#2b1d1d,#000);
 display:flex;
 align-items:center;
 justify-content:center;
-opacity:0;
-pointer-events:none;
-transition:0.8s;
+flex-direction:column;
+z-index:9999;
+text-align:center;
+padding:30px;
+transition:1s;
 }
 
-.modal.show{
-opacity:1;
-pointer-events:auto;
-}
-
-.modal-content{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
-padding:40px;
-border-radius:25px;
-max-width:600px;
+.birthday-text{
+font-size:22px;
+max-width:650px;
 line-height:1.8;
-box-shadow:0 20px 50px rgba(0,0,0,0.6);
+opacity:0;
+transition:1s;
 }
 
-.close{
-margin-top:20px;
-text-align:right;
-cursor:pointer;
+.birthday-text.show{
+opacity:1;
+}
+
+.final-line{
+margin-top:40px;
+font-size:24px;
 color:#ffd8a8;
+opacity:0;
+transition:2s;
+letter-spacing:1px;
 }
 
-/* 玫瑰 */
-.rose{
-position:fixed;
-top:-50px;
-font-size:20px;
-animation:fall linear infinite;
-opacity:0.8;
+.final-line.show{
+opacity:1;
 }
 
-@keyframes fall{
-to{
-transform:translateY(110vh) rotate(360deg);
-}
-}
-
-/* 烟花 */
 .firework{
 position:fixed;
 width:6px;
@@ -113,57 +112,105 @@ opacity:0;
 
 <body>
 
-<div class="header">
-<h1>Happy Birthday My Love 🎂</h1>
-<div class="age">31 岁 · 2026.03.03</div>
+<!-- 原网页 -->
+<div class="container">
+<h1>XY · Love Story</h1>
+
+<div class="card">
+<h2>甜蜜任务</h2>
+<button onclick="add(100)">家务 +100</button>
+<button onclick="add(300)">逛街 +300</button>
+<button onclick="add(500)">做饭 +500</button>
+<div style="margin-top:10px;">甜蜜值：<span id="score">0</span></div>
+</div>
 </div>
 
-<div class="modal" id="modal">
-<div class="modal-content">
-<p>波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少。</p>
-<br>
-<p>站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年。</p>
-<br>
-<p>真实很庆幸这一路有你。</p>
-
-<div class="close" onclick="closeModal()">关闭</div>
+<!-- 生日覆盖层 -->
+<div class="birthday-layer" id="birthdayLayer" style="display:none;">
+<div class="birthday-text" id="birthdayText"></div>
+<div class="final-line" id="finalLine">
+✨ 31 岁，欢迎来到更被爱的一年。 ✨
 </div>
 </div>
 
 <script>
 
-/* 判断生日 */
-const today=new Date();
-if(today.getFullYear()==2026 && today.getMonth()==2 && today.getDate()==3){
-document.body.classList.add("birthday");
-setTimeout(()=>{document.getElementById("modal").classList.add("show");},1500);
-createRoses();
+/* ===== 原积分系统 ===== */
+let score=localStorage.getItem("loveScore")||0;
+document.getElementById("score").innerText=score;
+
+function add(n){
+score=parseInt(score)+n;
+localStorage.setItem("loveScore",score);
+document.getElementById("score").innerText=score;
 }
 
-/* 关闭弹窗 */
-function closeModal(){
-document.getElementById("modal").classList.remove("show");
+/* ===== 生日模式逻辑 ===== */
+
+const birthdayDate="2026-03-03";
+const today=new Date().toISOString().split("T")[0];
+
+const messages=[
+"波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少。",
+"站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年。",
+"真实很庆幸这一路有你。"
+];
+
+let currentIndex=0;
+
+if(today===birthdayDate){
+startBirthdayMode();
 }
 
-/* 玫瑰飘落 */
-function createRoses(){
-for(let i=0;i<20;i++){
-let rose=document.createElement("div");
-rose.className="rose";
-rose.innerText="🌹";
-rose.style.left=Math.random()*100+"vw";
-rose.style.animationDuration=(5+Math.random()*5)+"s";
-document.body.appendChild(rose);
+function startBirthdayMode(){
+const layer=document.getElementById("birthdayLayer");
+layer.style.display="flex";
+showNextMessage();
+
+layer.addEventListener("click",function(e){
+if(currentIndex < messages.length){
+createFirework(e.clientX,e.clientY);
+currentIndex++;
+if(currentIndex < messages.length){
+setTimeout(showNextMessage,600);
+}else{
+setTimeout(showFinalLine,800);
 }
+}
+});
 }
 
-/* 点击烟花 */
-document.addEventListener("click",function(e){
+function showNextMessage(){
+const text=document.getElementById("birthdayText");
+text.classList.remove("show");
+setTimeout(()=>{
+text.innerText=messages[currentIndex];
+text.classList.add("show");
+},300);
+}
+
+function showFinalLine(){
+document.getElementById("birthdayText").classList.remove("show");
+const final=document.getElementById("finalLine");
+final.classList.add("show");
+setTimeout(endBirthdayMode,2500);
+}
+
+function endBirthdayMode(){
+const layer=document.getElementById("birthdayLayer");
+layer.style.opacity="0";
+setTimeout(()=>{
+layer.style.display="none";
+},1200);
+}
+
+/* 烟花 */
+function createFirework(x,y){
 for(let i=0;i<18;i++){
 let f=document.createElement("div");
 f.className="firework";
-f.style.left=e.clientX+"px";
-f.style.top=e.clientY+"px";
+f.style.left=x+"px";
+f.style.top=y+"px";
 let angle=Math.random()*2*Math.PI;
 let radius=60+Math.random()*40;
 f.style.setProperty("--x",Math.cos(angle)*radius+"px");
@@ -171,7 +218,7 @@ f.style.setProperty("--y",Math.sin(angle)*radius+"px");
 document.body.appendChild(f);
 setTimeout(()=>f.remove(),1000);
 }
-});
+}
 
 </script>
 
