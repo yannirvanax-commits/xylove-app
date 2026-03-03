@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XY · Forever Love</title>
+<title>XY · Love</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
 
@@ -12,72 +12,81 @@
 body{
 font-family:'Noto Serif SC',serif;
 color:#fff;
-overflow-x:hidden;
+overflow:hidden;
 }
 
-/* 生日模式 */
-#birthday{
+/* 背景轮播 */
+.bg{
 position:fixed;
 width:100%;
 height:100%;
-background:linear-gradient(135deg,#1c1c1c,#2b1d1d);
-display:flex;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-z-index:999;
-transition:1s;
-}
-
-#birthdayText{
-font-size:26px;
-max-width:700px;
-text-align:center;
-line-height:1.8;
-opacity:0;
-transition:1s;
-}
-
-.hidden{opacity:0;pointer-events:none;}
-
-/* 主页面 */
-#mainPage{
-background:url("bg.jpg") center/cover no-repeat fixed;
-min-height:100vh;
-padding:60px 20px;
-display:none;
+background-size:cover;
+background-position:center;
+transition:2s ease;
+z-index:-2;
 }
 
 .overlay{
-background:rgba(0,0,0,0.45);
-min-height:100vh;
-padding-bottom:100px;
+position:fixed;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.35);
+z-index:-1;
 }
 
-h1{text-align:center;font-size:42px;margin-bottom:10px;}
-.subtitle{text-align:center;margin-bottom:20px;}
-
+/* 玻璃卡片 */
 .glass{
 background:rgba(255,255,255,0.15);
-backdrop-filter:blur(15px);
-padding:30px;
-margin:30px auto;
-border-radius:25px;
-max-width:900px;
+backdrop-filter:blur(20px);
+padding:40px;
+border-radius:30px;
+max-width:800px;
+margin:auto;
+text-align:center;
+box-shadow:0 20px 50px rgba(0,0,0,0.4);
+}
+
+/* 主页面 */
+#main{
+display:none;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
 }
 
 button{
-background:#f4b6b6;
+background:rgba(255,255,255,0.8);
 border:none;
 padding:10px 20px;
 border-radius:30px;
-margin:8px;
+margin:5px;
 cursor:pointer;
 }
 
 .score{
-font-size:24px;
+font-size:22px;
 margin-bottom:20px;
+}
+
+/* 生日层 */
+#birthday{
+position:fixed;
+width:100%;
+height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:10;
+transition:1s;
+}
+
+#birthdayText{
+font-size:24px;
+opacity:0;
+transition:1s;
+white-space:nowrap;
 }
 
 /* 烟花 */
@@ -92,26 +101,29 @@ animation:boom 0.8s ease-out forwards;
 
 @keyframes boom{
 0%{transform:scale(1);opacity:1;}
-100%{transform:scale(25);opacity:0;}
+100%{transform:scale(30);opacity:0;}
 }
 </style>
 </head>
 
 <body>
 
-<!-- 生日模式 -->
+<div class="bg" id="bg"></div>
+<div class="overlay"></div>
+
+<!-- 生日 -->
 <div id="birthday">
+<div class="glass">
 <div id="birthdayText"></div>
 </div>
+</div>
 
-<!-- 主页面 -->
-<div id="mainPage">
-<div class="overlay">
-
-<h1>XY · Forever Love</h1>
-<div class="subtitle">To My One and Only 💍</div>
-
+<!-- 主系统 -->
+<div id="main">
 <div class="glass">
+
+<h1>XY · Forever</h1>
+
 <div class="score">甜蜜值：<span id="score">0</span></div>
 
 <h3>甜蜜任务</h3>
@@ -120,25 +132,33 @@ animation:boom 0.8s ease-out forwards;
 <button onclick="add(100)">遛狗 +100</button>
 <button onclick="add(500)">做饭 +500</button>
 <button onclick="add(500)">甜蜜时光 +500</button>
-</div>
 
-<div class="glass">
-<h3>兑换区</h3>
+<h3 style="margin-top:20px;">兑换区</h3>
 <button onclick="redeem(1000)">停止生气 -1000</button>
 <button onclick="redeem(2000)">回家住一天 -2000</button>
-</div>
 
 </div>
 </div>
 
 <script>
 
-/* ====== 生日模式逻辑 ====== */
+/* 背景轮播 */
+const images=["bg1.jpg","bg2.jpg","bg3.jpg","bg4.jpg"];
+let bgIndex=0;
+const bg=document.getElementById("bg");
 
+function changeBg(){
+bg.style.backgroundImage=`url(${images[bgIndex]})`;
+bgIndex=(bgIndex+1)%images.length;
+}
+changeBg();
+setInterval(changeBg,6000);
+
+/* 生日逻辑 */
 const texts=[
-"波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少。",
-"站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年。",
-"真实很庆幸这一路有你。"
+"波折就像是生活的褶皱，藏着爱与成长的秘密，让我长大不少",
+"站在新起点，我愿以全身心的爱护你，和小狗陪你走过岁岁年年",
+"真实很庆幸这一路有你"
 ];
 
 let index=0;
@@ -149,9 +169,8 @@ textBox.style.opacity=0;
 setTimeout(()=>{
 textBox.innerText=texts[index];
 textBox.style.opacity=1;
-},500);
+},400);
 }
-
 showText();
 
 document.getElementById("birthday").addEventListener("click",(e)=>{
@@ -178,12 +197,12 @@ function endBirthday(){
 document.getElementById("birthday").style.opacity=0;
 setTimeout(()=>{
 document.getElementById("birthday").style.display="none";
-document.getElementById("mainPage").style.display="block";
+document.getElementById("main").style.display="flex";
+document.body.style.overflow="auto";
 },1000);
 }
 
-/* ====== 积分系统 ====== */
-
+/* 积分系统 */
 let score=localStorage.getItem("loveScore")||0;
 document.getElementById("score").innerText=score;
 
@@ -199,7 +218,7 @@ score-=num;
 localStorage.setItem("loveScore",score);
 document.getElementById("score").innerText=score;
 }else{
-alert("甜蜜值不足哦～");
+alert("甜蜜值不足");
 }
 }
 
